@@ -17,6 +17,7 @@ public class FrmTraductor extends JFrame {
 
     JComboBox cmbfrase;
     JComboBox cmbidioma;
+    JList mostrarFrase;
 
     public FrmTraductor() {
 
@@ -38,7 +39,7 @@ public class FrmTraductor extends JFrame {
         lblidioma.setBounds(25, 50, 100, 25);
         getContentPane().add(lblidioma);
 
-        JList mostrarFrase = new JList();
+        mostrarFrase = new JList();
         mostrarFrase.setBounds(25, 160, 320, 80);
         getContentPane().add(mostrarFrase);
 
@@ -115,10 +116,38 @@ public class FrmTraductor extends JFrame {
             JOptionPane.showMessageDialog(null, "Error al cargar: " + ex.getMessage());
         }
     }
-    
-    private void Reproducir() {
-    }
 
+     private void Reproducir() {
+        String fraseSeleccionada = (String) cmbfrase.getSelectedItem();
+        String idiomaSeleccionado = (String) cmbidioma.getSelectedItem();
+        
+        String nombreArchivo = CambiarNombre(fraseSeleccionada) + "-" + CambiarNombre(idiomaSeleccionado) + ".mp3";
+        String rutaCompleta = "src/sonidos/" + nombreArchivo;
+    
+        ReproductorAudio.reproducir(rutaCompleta);
+    }
+    
+    private String CambiarNombre(String texto) {
+        return texto.toLowerCase()
+                .replace("á", "a").replace("é", "e").replace("í", "i")
+                .replace("ó", "o").replace("ú", "u").replace("ñ", "n")
+                .replace(" ", "")
+                .replace("?", "");
+    }
     private void Traducir() {
+        String fraseSeleccionada = (String) cmbfrase.getSelectedItem();
+        String idiomaSeleccionado = (String) cmbidioma.getSelectedItem();
+        
+        for (Frase frase : frases) {
+            if (frase.getTexto().equals(fraseSeleccionada)) {
+                for (Traduccion traduccion : frase.getTraducciones()) {
+                    if (traduccion.getIdioma().equals(idiomaSeleccionado)) {
+                        mostrarFrase.setListData(new String[]{traduccion.getTextoTraducido()});
+                        return;
+                    }
+                }
+            }
+        }
+        mostrarFrase.setListData(new String[]{"Traducción no encontrada"});
     }
 }
