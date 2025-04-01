@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import entidades.Frase;
@@ -82,6 +83,7 @@ public class FrmTraductor extends JFrame {
         String nombreArchivo = System.getProperty("user.dir") + "/src/datos/FrasesTraducidas.json";
     
         try {
+            objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
             Diccionario diccionario = objectMapper.readValue(new File(nombreArchivo), Diccionario.class);
             frases = diccionario.getFrases();
     
